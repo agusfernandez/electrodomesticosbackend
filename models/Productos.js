@@ -19,7 +19,7 @@ const productosSchema = new mongoose.Schema({
 
 // config de las imagenes
 
-productosSchema.methods.setImage = function setImagen (filename){
+productosSchema.methods.setImage = function setImage (filename){
     const {host, port} = appConfig;
     this.imagen = `${host}:${port}/public/${filename}`;
 }
