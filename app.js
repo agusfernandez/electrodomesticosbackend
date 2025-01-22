@@ -7,6 +7,7 @@ const cors = require('cors');
 
 
 const productosRoutes = require('./routes/productos');
+const userRoutes = require('./routes/user');
 const {appConfig} = require('./config');
 
 app.use(cors());
@@ -24,6 +25,7 @@ app.use(session({
 
 
 app.use('/v1', productosRoutes);
+app.use('/auth', userRoutes);
 
 
 module.exports= app;
