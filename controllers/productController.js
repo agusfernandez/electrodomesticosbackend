@@ -1,32 +1,31 @@
 const Producto = require('../models/Productos');
 
 
-async function addProducto(req,res){
-    try{
-        const{nombre, marca, descripcion,precio,imagen, categoria, estado, stock} = req.body;
-        const producto = Producto({
+async function addProducto(req, res) {
+    try {
+        const { nombre, marca, descripcion, precio, categoria, estado, stock } = req.body;
+        
+        const producto = new Producto({
             nombre,
             marca,
             descripcion,
             precio,
-            imagen,
             categoria,
             estado,
             stock
-        })
+        });
 
-        if(req.file){
-            const{filename} = req.file;
-            producto.setImage = filename;
+        if (req.file) {
+            const imageUrl = `http://localhost:8081/public/${req.file.filename}`;
+            producto.imagen = imageUrl; 
         }
 
-        const productos = await producto.save();
-        res.status(200).send({productos})
-
+        const productos = await producto.save();  // Guarda el producto en la base de datos
+        res.status(200).send({ productos });
 
     } catch (error) {
-        res.status(500).send({message: error.message});
-        console.log(error);
+        res.status(500).send({ message: error.message });
+        console.log('Error al crear el producto', error);
     }
 }
 
