@@ -114,7 +114,6 @@ const userController = {
             console.error('Error al eliminar usuario:', error);
             res.status(500).json({ message: 'Error al eliminar el usuario' });
         }
-        
     }
         
 };
