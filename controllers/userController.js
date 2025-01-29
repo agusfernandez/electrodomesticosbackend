@@ -83,38 +83,6 @@ const userController = {
           res.status(500).json({ message: 'Error interno del servidor' });
         }
       },
-
-      async deleteUser(req, res) {
-        try {
-            console.log("Authorization Header:", req.header('Authorization')); // Verifica si llega el token
-            const authHeader = req.header('Authorization');
-            if (!authHeader || !authHeader.startsWith('Bearer ')) {
-                console.log("Token no válido o no proporcionado");
-                return res.status(401).json({ message: 'Token no válido o no proporcionado' });
-            }
-            const token = authHeader.replace('Bearer ', '');
-            const decoded = jwt.verify(token, process.env.SECRET_KEY || 'defaultsecret');
-            console.log("Decoded Token:", decoded);
-        
-            const user = await User.findById(decoded.id);
-            if (!user) {
-                console.log("Usuario no encontrado");
-                return res.status(404).json({ message: 'Usuario no encontrado' });
-            }
-        
-            const deletedUser = await User.findByIdAndDelete(decoded.id);
-            if (!deletedUser) {
-                console.log("No se encontró el usuario para eliminar");
-                return res.status(404).json({ message: 'Usuario no encontrado' });
-            }
-        
-            console.log("Usuario eliminado correctamente");
-            res.status(200).json({ message: 'Usuario eliminado correctamente' });
-        } catch (error) {
-            console.error('Error al eliminar usuario:', error);
-            res.status(500).json({ message: 'Error al eliminar el usuario' });
-        }
-    }
         
 };
 

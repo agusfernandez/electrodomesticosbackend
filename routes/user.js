@@ -5,7 +5,6 @@ const userController = require('../controllers/userController');
 api.post('/register', userController.register);
 api.post('/login', userController.login);
 api.get('/user', userController.getUser);
-api.delete('/user/:userId', userController.deleteUser);
 
 api.post('/logout', (req, res) => {
     res.clearCookie('token');  // Si guardas el token en una cookie
