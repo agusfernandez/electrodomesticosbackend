@@ -37,9 +37,10 @@ const userController = {
     },
 
     async login(req, res) {
-        const { email, password } = req.body;
         try {
+            const { email, password } = req.body;
             const user = await User.findOne({ email });
+
             if (!user) {
                 return res.status(400).json({ message: 'Email o contraseña incorrectos' });
             }
@@ -51,38 +52,50 @@ const userController = {
             }
     
             // Generar token
-            const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY || 'defaultsecret', { expiresIn: '1h' });
+            const token = jwt.sign(
+                { id: user._id, role: user.role, username: user.username }, 
+                process.env.SECRET_KEY || 'defaultsecret',
+                { expiresIn: '1h' }
+            );
     
-            // Enviar el token al frontend
-            res.status(200).json({ token });
+            // Enviar el token y los datos del usuario al frontend
+            res.status(200).json({
+                token,
+                user: {
+                    id: user._id,
+                    nombre: user.nombre,
+                    email: user.email,
+                    username: user.username,
+                    role: user.role, // Asegúrate de que 'role' existe en tu modelo User
+                },
+            });
+
+            console.log('usuario autenticado', user)
+    
         } catch (error) {
+            console.error('Error en login:', error);
             res.status(500).json({ message: 'Error interno del servidor' });
         }
     },
 
     async getUser(req, res) {
         try {
-          // Obtener token de la cabecera Authorization
-          const token = req.header('Authorization').replace('Bearer ', '');
-          if (!token) {
-            return res.status(401).json({ message: 'No token provided' });
+            const user = await User.findById(req.user.id).select('-password'); // Excluye la contraseña
+        
+            if (!user) {
+              return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+        
+            console.log('Usuario encontrado:', user);
+            return res.status(200).json({ user });
+        
+          } catch (error) {
+            console.error('Error al obtener datos del usuario:', error);
+            res.status(500).json({ message: 'Error interno del servidor' });
           }
-    
-          // Verificar token
-          const decoded = jwt.verify(token, process.env.SECRET_KEY || 'defaultsecret');
-          const user = await User.findById(decoded.id);
-    
-          if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-          }
-    
-          // Retornar solo los datos necesarios del usuario
-          res.status(200).json({ user });
-        } catch (error) {
-          console.error('Error al obtener datos del usuario:', error);
-          res.status(500).json({ message: 'Error interno del servidor' });
-        }
-      },
+    }
+
+      
         
 };
 
