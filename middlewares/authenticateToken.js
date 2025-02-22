@@ -19,7 +19,6 @@ const authenticateToken = (req, res, next) => {
         next();
         } catch (error) {
         
-        console.log('error al verificar el token', error);
         res.status(403).json( {message: 'Token invalido'});
     }
 }

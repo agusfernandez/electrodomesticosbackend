@@ -54,6 +54,11 @@ async function findProductos(req,res){
 
 async function updateProductos(req,res){
     try { 
+        
+        if (req.file) {
+            req.body.imagen = `http://localhost:8081/public/${req.file.filename}`;
+        }
+
         const producto = await Producto.findByIdAndUpdate(req.params.id, req.body, {new: true});
         res.status(200).send({message: 'Producto actualizado', producto});
 

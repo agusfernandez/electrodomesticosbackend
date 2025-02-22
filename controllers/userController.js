@@ -70,7 +70,6 @@ const userController = {
                 },
             });
 
-            console.log('usuario autenticado', user)
     
         } catch (error) {
             console.error('Error en login:', error);
@@ -86,7 +85,6 @@ const userController = {
               return res.status(404).json({ message: 'Usuario no encontrado' });
             }
         
-            console.log('Usuario encontrado:', user);
             return res.status(200).json({ user });
         
           } catch (error) {
